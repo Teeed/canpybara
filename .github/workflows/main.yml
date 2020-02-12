@@ -1,4 +1,4 @@
-name: Try building
+name: Compile
 
 on: [push]
 
