@@ -1,0 +1,13 @@
+name: Try building
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: make
+      uses: docker://teeed/stm32-toolchain-make-action
