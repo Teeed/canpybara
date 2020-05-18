@@ -1,6 +1,8 @@
 #ifndef WIEGAND_H
 #define WIEGAND_H
 
+#include "main.h"
+
 #define WIEGAND_MAX_LENGTH 30
 #define WIEGAND_BUFFER_BIT_LENGTH sizeof(wiegand_buffer)*8
 #define WIEGAND_TIMEOUT 50

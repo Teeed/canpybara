@@ -100,14 +100,20 @@ void canpybara_test_sequence(void)
 
 	for(;;)
 	{
-		CanTxMsgTypeDef* CanTx = hcan.pTxMsg;
-		CanTx->StdId = 0x01;
-		CanTx->ExtId = 0;
-		CanTx->IDE = CAN_ID_STD;
-		CanTx->RTR = CAN_RTR_DATA;
-		CanTx->DLC = 1;
-		CanTx->Data[0] = 0x55;
-		HAL_StatusTypeDef result = HAL_CAN_Transmit(&hcan, 50);
+		CAN_TxHeaderTypeDef can_tx_header;
+		uint8_t can_tx_data[8];
+
+		can_tx_header.StdId = 0x01;
+		can_tx_header.ExtId = 0;
+		can_tx_header.IDE = CAN_ID_STD;
+		can_tx_header.RTR = CAN_RTR_DATA;
+		can_tx_header.DLC = 1;
+		can_tx_header.TransmitGlobalTime = DISABLE;
+
+		can_tx_data[0] = 0x55;
+
+		uint32_t mailbox_no;
+		HAL_StatusTypeDef result = HAL_CAN_AddTxMessage(&hcan, &can_tx_header, can_tx_data, &mailbox_no);
 		if(result != HAL_OK)
 		{
 			LOG("Transmitting CAN status: %d", result);

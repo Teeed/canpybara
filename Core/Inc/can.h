@@ -91,9 +91,8 @@ T T T T
 void canpybara_configure_filters(CAN_HandleTypeDef* hcan);
 void canpybara_can_init(void);
 
+void canpybara_can_tx(CAN_TxHeaderTypeDef* can_tx_header, uint8_t can_tx_data[8]);
 void canpybara_can_rx(CAN_HandleTypeDef* hcan);
-void canpybara_can_tx_ready(CAN_HandleTypeDef* hcan);
-void canpybara_can_tx(CanTxMsgTypeDef *can_tx);
 
 void canpybara_can_tx_complete(void);
 void canpybara_can_error(void);

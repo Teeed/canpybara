@@ -31,43 +31,47 @@ uint32_t uint32_reverse(uint32_t x)
 
 void canpybara_wiegand_process_card(void)
 {
-	static CanTxMsgTypeDef can_tx;
-	can_tx.StdId = CANPYBARA_REPORT_SCAN;
-	can_tx.ExtId = 0;
-	can_tx.IDE = CAN_ID_STD;
-	can_tx.RTR = CAN_RTR_DATA;
+	CAN_TxHeaderTypeDef can_tx_header;
+	uint8_t can_tx_data[8];
 
-	can_tx.DLC = 3;
-	int i = 0;
+	can_tx_header.StdId = CANPYBARA_REPORT_SCAN;
+	can_tx_header.ExtId = 0;
+	can_tx_header.IDE = CAN_ID_STD;
+	can_tx_header.RTR = CAN_RTR_DATA;
+	can_tx_header.DLC = 3;
+	can_tx_header.TransmitGlobalTime = DISABLE;
 
 	wiegand_buffer = uint32_reverse(wiegand_buffer);
 
-	can_tx.Data[i++] = wiegand_buffer >> 24; 
-	can_tx.Data[i++] = wiegand_buffer >> 16;
-	can_tx.Data[i++] = wiegand_buffer >> 8;
+	int i = 0;
+	can_tx_data[i++] = wiegand_buffer >> 24; 
+	can_tx_data[i++] = wiegand_buffer >> 16;
+	can_tx_data[i++] = wiegand_buffer >> 8;
 
-	canpybara_can_tx(&can_tx);
+	canpybara_can_tx(&can_tx_header, can_tx_data);
 }
 
 void canpybara_wiegand_process_keypress(void)
 {
 	LOG("Key ID: %"PRIu32, wiegand_buffer);
 
-	static CanTxMsgTypeDef can_tx;
-	can_tx.StdId = CANPYBARA_REPORT_BTNCLICK;
-	can_tx.ExtId = 0;
-	can_tx.IDE = CAN_ID_STD;
-	can_tx.RTR = CAN_RTR_DATA;
+	CAN_TxHeaderTypeDef can_tx_header;
+	uint8_t can_tx_data[8];
 
-	can_tx.DLC = 1;
+	can_tx_header.StdId = CANPYBARA_REPORT_BTNCLICK;
+	can_tx_header.ExtId = 0;
+	can_tx_header.IDE = CAN_ID_STD;
+	can_tx_header.RTR = CAN_RTR_DATA;
+	can_tx_header.DLC = 1;
+	can_tx_header.TransmitGlobalTime = DISABLE;
+
 	int i = 0;
-
 	wiegand_buffer = uint32_reverse(wiegand_buffer);
 	uint8_t key_code = wiegand_buffer >> 28;
 
-	can_tx.Data[i++] = key_code;
+	can_tx_data[i++] = key_code;
 
-	canpybara_can_tx(&can_tx);
+	canpybara_can_tx(&can_tx_header, can_tx_data);
 }
 
 void canpybara_wiegand_process_scan(void)

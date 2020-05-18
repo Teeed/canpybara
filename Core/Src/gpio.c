@@ -2,6 +2,7 @@
 
 #include "can.h"
 #include "logger.h"
+#include "main.h"
 
 #include <inttypes.h>
 
@@ -24,15 +25,19 @@ void canpybara_gpio_report(void)
 		}
 	}
 
-	static CanTxMsgTypeDef can_tx;
-	can_tx.StdId = CANPYBARA_REPORT_INRD;
-	can_tx.ExtId = 0;
-	can_tx.IDE = CAN_ID_STD;
-	can_tx.RTR = CAN_RTR_DATA;
-	can_tx.DLC = 1;
-	can_tx.Data[0] = port_status;
+	CAN_TxHeaderTypeDef can_tx_header;
+	uint8_t can_tx_data[8];
 
-	canpybara_can_tx(&can_tx);
+	can_tx_header.StdId = CANPYBARA_REPORT_INRD;
+	can_tx_header.ExtId = 0;
+	can_tx_header.IDE = CAN_ID_STD;
+	can_tx_header.RTR = CAN_RTR_DATA;
+	can_tx_header.DLC = 1;
+	can_tx_header.TransmitGlobalTime = DISABLE;
+
+	can_tx_data[0] = port_status;
+
+	canpybara_can_tx(&can_tx_header, can_tx_data);
 }
 
 static uint16_t OUTPUTS[] = { OUT0_Pin, OUT1_Pin, OUT2_Pin, OUT3_Pin, OUT4_Pin, OUT5_Pin, RELAY0_Pin, RELAY1_Pin };
@@ -60,15 +65,19 @@ void canpybara_gpio_handle_outrdreq(void)
 		}
 	}
 
-	static CanTxMsgTypeDef can_tx;
-	can_tx.StdId = CANPYBARA_REPORT_OUTRD;
-	can_tx.ExtId = 0;
-	can_tx.IDE = CAN_ID_STD;
-	can_tx.RTR = CAN_RTR_DATA;
-	can_tx.DLC = 1;
-	can_tx.Data[0] = port_status;
+	CAN_TxHeaderTypeDef can_tx_header;
+	uint8_t can_tx_data[8];
 
-	canpybara_can_tx(&can_tx);
+	can_tx_header.StdId = CANPYBARA_REPORT_OUTRD;
+	can_tx_header.ExtId = 0;
+	can_tx_header.IDE = CAN_ID_STD;
+	can_tx_header.RTR = CAN_RTR_DATA;
+	can_tx_header.DLC = 1;
+	can_tx_header.TransmitGlobalTime = DISABLE;
+
+	can_tx_data[0] = port_status;
+
+	canpybara_can_tx(&can_tx_header, can_tx_data);
 }
 
 void canpybara_gpio_interrupt(uint16_t GPIO_Pin)
